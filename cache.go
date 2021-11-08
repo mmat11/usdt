@@ -52,9 +52,9 @@ type sdtNote struct {
 	bo binary.ByteOrder
 }
 
-// Get note from cache, if exists, or load it.
+// Get note from cache, if exists.
 //
-// Returns errNotFound if can't be loaded.
+// Returns errNotFound if not yet loaded.
 func (u *USDT) note() (*sdtNote, error) {
 	cache.Lock()
 	defer cache.Unlock()
