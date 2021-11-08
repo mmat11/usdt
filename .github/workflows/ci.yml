@@ -27,12 +27,19 @@ jobs:
           go-version: 1.17
       - name: Install dependencies
         run: |
+          sudo apt-get update
           sudo apt-get install -y systemtap-sdt-dev libelf1 libelf-dev
-          sudo pip3 install stapsdt black isort
+          sudo pip install stapsdt black isort
+          mkdir $GITHUB_WORKSPACE/libstapsdt
+          git clone https://github.com/linux-usdt/libstapsdt $GITHUB_WORKSPACE/libstapsdt
+          cd $GITHUB_WORKSPACE/libstapsdt
+          make
+          sudo make install
+          sudo ldconfig
       - name: Compile
         run: make -C testdata/
       - name: Test
         run: |
           export PATH=${PATH}:`go env GOPATH`/bin
           go mod tidy
-          go test -exec sudo -cover ./...
+          go test -exec sudo -cover -v ./...

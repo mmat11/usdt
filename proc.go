@@ -31,7 +31,6 @@ func sharedObjects(pid int) (map[string]regionAddrInfo, error) {
 	s := bufio.NewScanner(m)
 	for s.Scan() {
 		ss := strings.Split(s.Text(), " ")
-
 		path := ss[len(ss)-1]
 
 		// Inode.

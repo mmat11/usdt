@@ -9,6 +9,8 @@ import (
 	"io"
 	"os"
 	"sync"
+
+	"github.com/davecgh/go-spew/spew"
 )
 
 func init() {
@@ -92,6 +94,8 @@ func (u *USDT) loadAll() error {
 	if err != nil {
 		return fmt.Errorf("fetch shared objects: %w", err)
 	}
+
+	spew.Dump(objs)
 
 	for obj, info := range objs {
 		if err := u.load(obj, info); err != nil {
