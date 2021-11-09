@@ -1,6 +1,7 @@
 package usdt_test
 
 import (
+	"os"
 	"os/exec"
 	"testing"
 	"time"
@@ -34,16 +35,13 @@ func TestUSDT(t *testing.T) {
 			"function__entry",
 			100 * time.Millisecond,
 		},
-		/*
-		   TODO: this fails in CI, find out why
-		   {
-		       "Python (libstapsdt)",
-		       exec.Command("python", "testdata/libstapsdt.py"),
-		       "X",
-		       "Y",
-		       100 * time.Millisecond,
-		   },
-		*/
+		{
+			"Python (libstapsdt)",
+			exec.Command("python", "testdata/libstapsdt.py"),
+			"X",
+			"Y",
+			100 * time.Millisecond,
+		},
 		{
 			"C (simple)",
 			exec.Command("testdata/simple.o"),
@@ -65,6 +63,8 @@ func TestUSDT(t *testing.T) {
 			m, p := newMapProg(t)
 
 			// Run the tracee in the background.
+			tt.cmd.Stdout = os.Stdout
+			tt.cmd.Stderr = os.Stderr
 			if err := tt.cmd.Start(); err != nil {
 				t.Fatal(err)
 			}

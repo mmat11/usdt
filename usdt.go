@@ -41,14 +41,14 @@ func New(prog *ebpf.Program, provider, probe string, pid int) (*USDT, error) {
 	if err != nil {
 		if errors.Is(err, errNotFound) {
 			if err := u.loadAll(); err != nil {
-				return nil, err
+				return nil, fmt.Errorf("load all notes: %w", err)
 			}
 		}
 
 		// Cache should now be ready, retry.
 		note, err = u.note()
 		if err != nil {
-			return nil, err
+			return nil, fmt.Errorf("load note: probe %s not found in provider %s: %w", probe, provider, err)
 		}
 	}
 
