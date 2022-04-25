@@ -84,7 +84,7 @@ func (u *USDT) loadAll() error {
 
 	cache.notes[u.path] = make(map[string]map[string]sdtNote)
 
-	if err := u.load(u.path, regionAddrInfo{0, 0}); err != nil {
+	if err := u.load(u.path, nil); err != nil {
 		return fmt.Errorf("load main exe notes: %w", err)
 	}
 
@@ -105,7 +105,7 @@ func (u *USDT) loadAll() error {
 // Load SDT notes from the given ELF file into cache.
 //
 // www.sourceware.org/systemtap/wiki/UserSpaceProbeImplementation
-func (u *USDT) load(obj string, info regionAddrInfo) error {
+func (u *USDT) load(obj string, info *regionAddrInfo) error {
 	osf, err := os.Open(obj)
 	if err != nil {
 		return fmt.Errorf("open file: %w", err)
@@ -170,7 +170,10 @@ func (u *USDT) load(obj string, info regionAddrInfo) error {
 			note.locationOffset = locationOffset(f, note.location)
 			if note.semaphore != 0 {
 				note.semaphore += diff
-				note.semaphoreOffsetUser = note.semaphore + info.start - info.offset
+				note.semaphoreOffsetUser = note.semaphore
+				if info != nil {
+					note.semaphoreOffsetUser += info.start - info.offset
+				}
 				note.semaphoreOffsetKernel = semaphoreOffsetKernel(f, note.semaphore)
 			}
 		}

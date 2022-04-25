@@ -19,8 +19,8 @@ type regionAddrInfo struct {
 }
 
 // Fetch all shared objects from /proc/<pid>/maps.
-func sharedObjects(pid int) (map[string]regionAddrInfo, error) {
-	objs := make(map[string]regionAddrInfo)
+func sharedObjects(pid int) (map[string]*regionAddrInfo, error) {
+	objs := make(map[string]*regionAddrInfo)
 
 	m, err := os.Open(fmt.Sprintf("/proc/%d/maps", pid))
 	if err != nil {
@@ -39,6 +39,14 @@ func sharedObjects(pid int) (map[string]regionAddrInfo, error) {
 			continue
 		}
 
+		objs[path] = nil
+
+		// Perms.
+		if string(ss[1][1]) != "w" {
+			// Skip non writable regions.
+			continue
+		}
+
 		regionAddr := strings.Split(ss[0], "-")
 		start, err := strconv.ParseUint(regionAddr[0], 16, 64)
 		if err != nil {
@@ -50,7 +58,7 @@ func sharedObjects(pid int) (map[string]regionAddrInfo, error) {
 			return objs, err
 		}
 
-		objs[path] = regionAddrInfo{start, off}
+		objs[path] = &regionAddrInfo{start, off}
 	}
 
 	return objs, nil
