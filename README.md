@@ -6,7 +6,7 @@
 
 ## Introduction
 
-`usdt` is a Go library for linking `cilium/ebpf`'s `Program` to userspace statically defined tracepoints.
+`usdt` is a Go package for linking `cilium/ebpf`'s `Program` to userspace statically defined tracepoints.
 
 ## Getting started
 
