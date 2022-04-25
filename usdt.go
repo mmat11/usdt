@@ -8,6 +8,7 @@ import (
 	"github.com/cilium/ebpf/link"
 )
 
+// USDT is a userspace statically defined tracepoint.
 type USDT struct {
 	pid                   int
 	path, provider, probe string
@@ -15,6 +16,7 @@ type USDT struct {
 	close                 *func() error
 }
 
+// Close closes the underlying uprobe.
 func (u *USDT) Close() error {
 	if err := u.uprobe.Close(); err != nil {
 		return fmt.Errorf("close uprobe: %w", err)
@@ -25,6 +27,8 @@ func (u *USDT) Close() error {
 	return nil
 }
 
+// New opens an USDT for the provided provider, probe and pid and attaches
+// it to prog.
 func New(prog *ebpf.Program, provider, probe string, pid int) (*USDT, error) {
 	if pid < 1 {
 		return nil, errors.New("invalid pid")
