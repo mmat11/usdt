@@ -19,7 +19,14 @@ import (
 	"github.com/mmat11/usdt"
 )
 
-//go:generate go run github.com/cilium/ebpf/cmd/bpf2go -cc clang -type event bpf ./bpf/py_builtin.c
+//go:generate go run github.com/cilium/ebpf/cmd/bpf2go -cc clang bpf ./bpf/py_builtin.c
+
+type bpfEvent struct {
+	Filename [101]byte
+	FnName   [101]byte
+	_        [2]byte
+	Lineno   int32
+}
 
 func main() {
 	pid := flag.Int("pid", 0, "Pid of the process.")
