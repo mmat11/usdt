@@ -10,7 +10,28 @@
 
 ## Getting started
 
-TODO: examples
+You can find an example in the examples folder.
+
+To try it, start a python process:
+
+```
+(venv) ➜  cpython git:(main) ✗ python
+Python 3.10.4 (main, Mar 25 2022, 00:00:00) [GCC 11.2.1 20220127 (Red Hat 11.2.1-9)] on linux
+Type "help", "copyright", "credits" or "license" for more information.
+>>> import os
+>>> os.getpid()
+373829
+```
+
+Then run the Go process and observe `function__entry` tracepoint events:
+
+```
+go run -exec sudo ./ -pid 373829
+
+/usr/lib64/python3.10/random.py:366 -> randint()
+/usr/lib64/python3.10/random.py:292 -> randrange()
+/usr/lib64/python3.10/random.py:239 -> _randbelow_with_getrandbits()
+```
 
 ### Testing
 
